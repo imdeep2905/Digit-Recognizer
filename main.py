@@ -1,12 +1,12 @@
 import tkinter as tk
-from tkinter import messagebox
 from tkinter import *
-from tkinter import filedialog
+from tkinter import filedialog, messagebox, Button, Label, Canvas
 from PIL import ImageTk, Image, ImageGrab
 import cv2 
 from tensorflow import keras
 import numpy as np 
 import os
+import matplotlib.pyplot as plt
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
 #os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 class Model:
@@ -15,16 +15,18 @@ class Model:
     
     def predict(self):
         img = cv2.imread('image.jpg')
-        img = cv2.resize(img, (28, 28), interpolation = cv2.INTER_AREA)
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        cv2.imshow('Feeding', img)
-        print(img.shape)
-        img = np.asarray(img)
-        print(img.shape)
-        img = img.reshape(1,28,28,1)
+        cv2.imshow('Processed', img)
+        img = cv2.resize(img, (28, 28), interpolation = cv2.INTER_AREA)
+        img = img.astype('float32')
+        img /= 255
+        #plt.imshow(img)
+        #plt.plot()
+        #plt.show()
+        img  = np.reshape(img, (1, 28, 28, 1)) 
         model = keras.models.load_model('model.h5')
-        for l in model.predict(img):
-            return (np.argmax(l)) 
+        print(model.summary())
+        return model.predict_classes(img)[0]
         
 class MainApp:
     def __init__(self):
@@ -38,7 +40,7 @@ class MainApp:
         self.root.resizable(0,0)
         #Creating GUI Elements
         self.lbl_drawhere = LabelFrame(text = "Draw Here with Mouse")
-        self.area_draw = Canvas(self.lbl_drawhere, width=320, height=320, bg='white')
+        self.area_draw = Canvas(self.lbl_drawhere, width = 308, height = 308, bg = 'black')
         self.area_draw.bind('<B1-Motion>',self.draw)
         
         self.lbl_image = LabelFrame(text = "Image")
@@ -62,8 +64,8 @@ class MainApp:
         self.lbl_cur_img.pack()  
 
     def draw(self,event):
-        #self.area_draw.create_oval(event.x, event.y, event.x + 9, event.y + 9)    
-        self.area_draw.create_rectangle(event.x, event.y, event.x + 15, event.y + 15, fill = '#000')
+        self.area_draw.create_oval(event.x, event.y, event.x + 20, event.y + 20, outline = 'white',fill = 'white')    
+        self.area_draw.create_rectangle(event.x, event.y, event.x + 19, event.y + 19, outline = 'white',fill = 'white')
         self.pre = 'D'
             
     def run(self):
@@ -73,16 +75,19 @@ class MainApp:
         self.area_draw.delete('all')
         
     def browse_image(self):
-        self.area_img.text = ""
-        file = filedialog.askopenfilename(filetypes=[('Images',['*jpeg','*png','*jpg'])]) 
-        file = Image.open(file)
-        file = file.resize((320, 320)) 
-        file.save('image.jpg')
-        file = ImageTk.PhotoImage(file)
-        self.area_img.configure(image = file)
-        self.area_img.image = file
-        self.pre = 'C'
-        
+        try:
+            self.area_img.text = ""
+            file = filedialog.askopenfilename(filetypes=[('Images',['*jpeg','*png','*jpg'])]) 
+            file = Image.open(file)
+            file = file.resize((320, 320)) 
+            file.save('image.jpg')
+            file = ImageTk.PhotoImage(file)
+            self.area_img.configure(image = file)
+            self.area_img.image = file
+            self.pre = 'C'
+        except Exception as e:
+            messagebox.showerror("An Error Occured", e)
+                    
     def open_camera(self):
         cap = cv2.VideoCapture(0)
         if not cap.isOpened():
@@ -118,7 +123,7 @@ class MainApp:
                 y = self.root.winfo_rooty() + self.area_draw.winfo_y()
                 x1 = x + self.area_draw.winfo_width()
                 y1 = y + self.area_draw.winfo_height()
-                ImageGrab.grab().crop((x,y,x1,y1)).save('image.jpg')
+                ImageGrab.grab().crop((x,y + 10,x1,y1 )).save('image.jpg')
                 messagebox.showinfo(title = "Prediction", message = f"I Predict you have drawn {self.model.predict()}")
             else:
                 messagebox.showinfo(title = "Prediction", message = f"I Predict number in image is {self.model.predict()}")                
