@@ -57,8 +57,8 @@ class MainApp:
         self.lbl_cur_img.pack()  
 
     def draw(self,event):
-        self.area_draw.create_oval(event.x, event.y, event.x + 9, event.y + 9, outline = 'white',fill = 'white')    
-        self.area_draw.create_rectangle(event.x, event.y, event.x + 8, event.y + 8, outline = 'white',fill = 'white')
+        self.area_draw.create_oval(event.x, event.y, event.x + 13, event.y + 13, outline = 'white',fill = 'white')    
+        self.area_draw.create_rectangle(event.x, event.y, event.x + 12, event.y + 12, outline = 'white',fill = 'white')
         self.pre = 'D'
             
     def run(self):
