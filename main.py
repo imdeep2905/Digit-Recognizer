@@ -6,9 +6,7 @@ import cv2
 from tensorflow import keras
 import numpy as np 
 import os
-import matplotlib.pyplot as plt
 os.environ['CUDA_VISIBLE_DEVICES'] = '-1'
-#os.environ['TF_CPP_MIN_LOG_LEVEL']='2'
 class Model:
     def __init__(self):
         pass
@@ -16,13 +14,9 @@ class Model:
     def predict(self):
         img = cv2.imread('image.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        #cv2.imshow('Processed', img)
         img = cv2.resize(img, (28, 28), interpolation = cv2.INTER_AREA)
         img = img.astype('float32')
         img /= 255
-        #plt.imshow(img)
-        #plt.plot()
-        #plt.show()
         img  = np.reshape(img, (1, 28, 28, 1)) 
         model = keras.models.load_model('model.h5')
         return model.predict_classes(img)[0]
