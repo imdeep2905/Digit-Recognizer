@@ -1,5 +1,5 @@
 # Digit-Recognizer
-![logo](https://github.com/imdeep2905/Digit-Recognizer/blob/master/Images/icon.png)
+![logo](https://github.com/imdeep2905/Digit-Recognizer/blob/master/Images/icon.png)<br>
 ![Demo](https://github.com/imdeep2905/Digit-Recognizer/blob/master/Images/demo.gif)
 # Contents
 1. [Introduction](#Introduction)
