@@ -16,7 +16,7 @@ class Model:
     def predict(self):
         img = cv2.imread('image.jpg')
         img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-        cv2.imshow('Processed', img)
+        #cv2.imshow('Processed', img)
         img = cv2.resize(img, (28, 28), interpolation = cv2.INTER_AREA)
         img = img.astype('float32')
         img /= 255
@@ -25,7 +25,6 @@ class Model:
         #plt.show()
         img  = np.reshape(img, (1, 28, 28, 1)) 
         model = keras.models.load_model('model.h5')
-        print(model.summary())
         return model.predict_classes(img)[0]
         
 class MainApp:
@@ -64,8 +63,8 @@ class MainApp:
         self.lbl_cur_img.pack()  
 
     def draw(self,event):
-        self.area_draw.create_oval(event.x, event.y, event.x + 20, event.y + 20, outline = 'white',fill = 'white')    
-        self.area_draw.create_rectangle(event.x, event.y, event.x + 19, event.y + 19, outline = 'white',fill = 'white')
+        self.area_draw.create_oval(event.x, event.y, event.x + 9, event.y + 9, outline = 'white',fill = 'white')    
+        self.area_draw.create_rectangle(event.x, event.y, event.x + 8, event.y + 8, outline = 'white',fill = 'white')
         self.pre = 'D'
             
     def run(self):
